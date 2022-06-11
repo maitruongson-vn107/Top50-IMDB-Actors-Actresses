@@ -14,6 +14,9 @@ from src.view.components.origins_pie_chart import OriginPieChart
 
 
 def open_confirm_dialog():
+    """
+    Confirmation Dialog when user click "Update Data" button
+    """
     confirm_dialog = QDialog()
     confirm_dialog.setWindowTitle("Data Update Confirmation")
     QBtn = QDialogButtonBox.Ok | QDialogButtonBox.Cancel

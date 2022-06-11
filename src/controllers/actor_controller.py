@@ -53,11 +53,15 @@ def getOriginStats():
     origins = dc.CURSOR.fetchall()
     origins = [origin[0].split(', ')[-1] for origin in origins]
     origins_count = dict(Counter(origins))
-    origins_count = dict(sorted(origins_count.items(), key=lambda item: item[1], reverse=True))
-    origins_count = dict(itertools.islice(origins_count.items(), 3))
 
-    origins_count["Others"] = 6
-    return origins_count
+    origins_count = dict(sorted(origins_count.items(), key=lambda item: item[1], reverse=True))
+    rs = {"Others": 0}
+    for k, v in origins_count.items():
+        if v > 2:
+            rs[k] = v
+        else:
+            rs["Others"] += v
+    return rs
 
 
 def getAgeStats():
@@ -84,6 +88,3 @@ def getAgeStats():
             rs["70+"] += v
 
     return rs
-
-
-print(getAgeStats())

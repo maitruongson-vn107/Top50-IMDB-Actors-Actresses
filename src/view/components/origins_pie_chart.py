@@ -25,8 +25,8 @@ class OriginPieChart(QVBoxLayout):
         ax = self.figure.add_subplot(111)
         labels = list(origins_count.keys())
         data = list(origins_count.values())
-        explode = (0.1, 0, 0, 0)
-        colors = ['#C4B454', '#DEB522', '#FFD700', '#F8DE7E']
+        explode = (0, 0.1, 0)
+        colors = ['#C4B454', '#DEB522', '#FFD700']
         ax.pie(data, labels=labels, startangle=90,
                autopct=lambda pct: auto_pct_func(pct, data),
                colors=colors, explode=explode)

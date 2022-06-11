@@ -20,6 +20,12 @@ months = {'January': 1, 'February': 2, 'March': 3, 'April': 4, 'May': 5, 'June':
 
 # CRAWL THE MAIN PAGE
 def crawlMainPage():
+    '''
+    Using BeautifulSoup to scrap data from IMDb Top-50 page
+    Crawl Main List -> Actor Biography Page, Actor's Filmography, Actor's Awards
+    Save Data to SQLite file
+    :return:
+    '''
     print("Begin Crawling: ", datetime.datetime.now().time())
     rqMainList = rq.get(BASEURL + ACTOR_LIST_URL)  # request the website
     soup = BeautifulSoup(rqMainList.text, 'lxml')
@@ -119,6 +125,13 @@ def crawlActor(link_to_profile):
 
 
 def crawlActorFilms(link_to_profile, actorID):
+    """
+    From Actor's Filmography, scarping actor's film list and storing in SQLite
+    :param link_to_profile: link to actor's profile page
+    :param actorID: actorID saved in SQLite
+    :return:
+    """
+    # REQUEST TO GET ACTOR'S FILM LIST (HTML VERSION)
     headers = {"Accept-Language": "en-US,en;q=0.5"}
     params = dict(lang='en-US,en;q=0.5')
     actor_films_page = rq.get(BASEURL + link_to_profile, headers=headers, params=params)
@@ -132,10 +145,12 @@ def crawlActorFilms(link_to_profile, actorID):
         film_year = ""
         film_rating = 0.0
 
+        # GET FILM'S TITLE
         film_title_container = film_row.findAll("a", href=re.compile('^/title/tt'))
         if film_title_container[0] is not None:
             film_title = film_title_container[0].string
 
+        # GET FILM'S YEAR
         film_year_container = film_row.findAll("span", {'class': "year_column"})
         if film_year_container[0] is not None:
             film_year = re.sub(re.compile('\n'), '', film_year_container[0].string)  # remove html tags
@@ -161,19 +176,24 @@ def crawlActorFilms(link_to_profile, actorID):
             if film_rating_span:
                 film_rating = float(film_rating_span.text)
 
+        # SAVE NEW FILM
         new_film = Film(filmID=None, title=film_title, year=film_year, rating=film_rating, genres=film_genres)
         film_controller.createFilm(actorID, new_film)
-        print("Film: " + film_title)
 
 
 def crawlActorAwards(link_to_profile, actorID):
+    """
+    From actor's award page, scraping actor's award list and storing in SQLite
+    :param link_to_profile: link to actor's personal information page
+    :param actorID: actorID saved in SQLite
+    :return:
+    """
     actor_award_page = rq.get(BASEURL + link_to_profile + AWARDS_ENDPOINT)
     actor_award_soup = BeautifulSoup(actor_award_page.text, 'lxml')
     actor_award_tables = actor_award_soup.findAll('table', {'class': 'awards'})
     award_outcome = ""
     award_year = ""
     award_category = ""
-    award_title = ""
     award_film_name = ""
     award_film_year = ""
 
@@ -210,6 +230,12 @@ def crawlActorAwards(link_to_profile, actorID):
 
 
 def removeHTMLTags(html, *tags):
+    """
+    Remove HTML Tags from an HTML passage
+    :param html: html passage
+    :param tags: tags to be removed
+    :return:
+    """
     soup = BeautifulSoup(html, "lxml")
 
     for tag in tags:

@@ -1,12 +1,11 @@
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QTableWidget, QTableWidgetItem
-from src.controllers.film_controller import getFilmsListByActorId
 
 
 class FilmTableWidget(QTableWidget):
-    def __init__(self, actor_id):
+    def __init__(self, films_list):
         super(FilmTableWidget, self).__init__()
-        self.films_list = getFilmsListByActorId(actor_id)
+        self.films_list = films_list
         self.set_col_row()
         self.load_data()
         self.set_style()

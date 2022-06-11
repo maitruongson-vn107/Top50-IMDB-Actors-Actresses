@@ -7,6 +7,11 @@ from actor_personal_window import ActorPersonalWindow
 
 
 def getActorImage(actor_image_link):
+    """
+    From image link to QLabel widget
+    :param actor_image_link: actor avatar link
+    :return: QLabel containing actor's avatar
+    """
     actor_image = QPixmap(actor_image_link)
     logo_label = QLabel()
     logo_label.setPixmap(actor_image.scaled(200, 200, aspectRatioMode=Qt.KeepAspectRatio))
@@ -17,14 +22,17 @@ class ActorMainTable(QTableWidget):
     def __init__(self):
         super(ActorMainTable, self).__init__()
         self.actor_personal_window = None
-        self.setColumnCount(2)
-        self.setRowCount(100)
 
+        self.set_col_row()
         self.load_data()
         self.set_style()
         self.setHorizontalHeaderLabels(("", ""))
 
         self.itemDoubleClicked.connect(self.clickingHandler)
+
+    def set_col_row(self):
+        self.setColumnCount(2)
+        self.setRowCount(100)
 
     def set_style(self):
         self.setColumnWidth(0, 200)
@@ -50,7 +58,7 @@ class ActorMainTable(QTableWidget):
             actor_bio.setFlags(actor_bio.flags() ^ Qt.ItemIsEditable)
 
             # ACTOR IMAGE
-            actor_image_link = "../actor_images/" + actor_record[1].lower().replace(" ", "").replace(".", "") + ".jpg"
+            actor_image_link = "../assets/actor_images/" + actor_record[1].lower().replace(" ", "").replace(".", "") + ".jpg"
             actor_image_widget = getActorImage(actor_image_link)
 
             self.setCellWidget(row * 2, 0, actor_image_widget)
@@ -61,7 +69,10 @@ class ActorMainTable(QTableWidget):
             self.setSpan(row * 2, 0, 2, 1)
 
     def clickingHandler(self, item: QTableWidgetItem):
+        """
+        Handler when a table item is clicked
+        :param item: clicked table item
+        """
         actor_id = int(item.row() / 2) + 1
-        print(actor_id)
         self.actor_personal_window = ActorPersonalWindow(actor_id)
         self.actor_personal_window.show()

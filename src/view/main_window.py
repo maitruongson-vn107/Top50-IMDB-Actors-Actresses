@@ -25,9 +25,12 @@ class MainWindow(QWidget):
     def initUI(self):
         hbox = QHBoxLayout()
         hbox.setSpacing(5)
+
+        # ACTOR MAIN TABLE: List of Top 50 Actors/Actresses
         actor_main_table = ActorMainTable()
         hbox.addWidget(actor_main_table)
 
+        # GENERAL INFO TAB: Basic statistics of 50 actors/actresses
         general_info_tab = GeneralInfoTab()
         general_info_widget = QWidget()
         general_info_widget.setLayout(general_info_tab)

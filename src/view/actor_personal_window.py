@@ -5,7 +5,8 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QScrollArea, \
 
 from src.controllers.actor_controller import getOneActorInfoById
 from src.controllers.award_controller import getAwardsCountByActorID, getAwardsListByActorID
-from src.controllers.film_controller import getFilmsCountByActorId, getAverageRatingByActorID
+from src.controllers.film_controller import getFilmsCountByActorId, getAverageRatingByActorID, getTopFilmsListByActorId, \
+    getFilmsListByActorId
 from src.controllers.genre_controller import getGenresByActorID
 from src.utils import text_utils
 from src.view.components.actor_info_label import ActorInfoLabel
@@ -84,6 +85,7 @@ class ActorPersonalWindow(QScrollArea):
         )
         self.vbox.addWidget(actor_career_info)
 
+        # ACTOR'S BIO LABEL
         actor_bio = actor_info[8].replace(",", ", ").replace(".", ". ")
         actor_bio_label = ActorInfoLabel(actor_bio)
         painter = QPainter()
@@ -99,7 +101,18 @@ class ActorPersonalWindow(QScrollArea):
         films_title = ActorTitleLabel("Filmography")
         self.vbox.addWidget(films_title)
 
-        films_table_widget = FilmTableWidget(actor_id)
+        # Top 5 films
+        top5_film_title = ActorSubTitleLabel("Top 5")
+        self.vbox.addWidget(top5_film_title)
+        top5_films_list = getTopFilmsListByActorId(actor_id, 5)
+        top5_film_table_widget = FilmTableWidget(top5_films_list)
+        self.vbox.addWidget(top5_film_table_widget)
+
+        # All time films
+        all_time_films_title = ActorSubTitleLabel("All time")
+        self.vbox.addWidget(all_time_films_title)
+        all_time_films_list = getFilmsListByActorId(actor_id)
+        films_table_widget = FilmTableWidget(all_time_films_list)
         self.vbox.addWidget(films_table_widget)
 
         # RATING AREA
